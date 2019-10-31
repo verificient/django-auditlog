@@ -7,13 +7,15 @@ from django.conf import settings
 from django.db.models.signals import pre_save
 from django.utils.functional import curry
 from django.apps import apps
+from django.utils.deprecation import MiddlewareMixin
+
 from auditlog.models import LogEntry
 
 
 threadlocal = threading.local()
 
 
-class AuditlogMiddleware(object):
+class AuditlogMiddleware(MiddlewareMixin):
     """
     Middleware to couple the request's user to log items. This is accomplished by currying the signal receiver with the
     user from the request (or None if the user is not authenticated).
@@ -91,7 +93,7 @@ def get_current_user():
     if request:
         return getattr(request, "user", None)
 
-class ThreadLocalMiddleware(object):
+class ThreadLocalMiddleware(MiddlewareMixin):
     """ Simple middleware that adds the request object in thread local stor    age."""
 
     def process_request(self, request):
