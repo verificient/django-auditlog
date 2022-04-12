@@ -40,6 +40,7 @@ class AuditlogModelRegistry(object):
         include_fields: Optional[List[str]] = None,
         exclude_fields: Optional[List[str]] = None,
         mapping_fields: Optional[Dict[str, str]] = None,
+        mask_fields: Optional[List[str]] = None,
     ):
         """
         Register a model with auditlog. Auditlog will then track mutations on this model's instances.
@@ -57,6 +58,8 @@ class AuditlogModelRegistry(object):
             exclude_fields = []
         if mapping_fields is None:
             mapping_fields = {}
+        if mask_fields is None:
+            mask_fields = []
 
         def registrar(cls):
             """Register models for a given class."""
@@ -114,6 +117,7 @@ class AuditlogModelRegistry(object):
             "include_fields": list(self._registry[model]["include_fields"]),
             "exclude_fields": list(self._registry[model]["exclude_fields"]),
             "mapping_fields": dict(self._registry[model]["mapping_fields"]),
+            "mask_fields": list(self._registry[model]["mask_fields"]),
         }
 
     def _connect_signals(self, model):
