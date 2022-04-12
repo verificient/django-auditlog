@@ -1,8 +1,9 @@
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db.models import NOT_PROVIDED, DateTimeField, Model
 from django.utils import timezone
-from django.utils.encoding import smart_str
+from django.utils.encoding import smart_str, smart_text
+from django.core.validators import validate_email
 
 
 def track_field(field):
@@ -76,6 +77,25 @@ def get_field_value(obj, field):
     return value
 
 
+def mask_str(value: str) -> str:
+    """
+    Masks the first half of the input string to remove sensitive data.
+    :param value: The value to mask.
+    :type value: str
+    :return: The masked version of the string.
+    :rtype: str
+    """
+    try:
+        validate_email(value)
+        at = value.find("@")
+        dot = value[at:].find(".")
+        obfuscated_email = value[0] + "*" * (at - 2) + value[at - 1 : at + 2] + "*" * (dot - 3) + value[at + dot - 1 :]
+        return obfuscated_email
+    except ValidationError as e:
+        mask_limit = int(len(value) / 2)
+        return "*" * mask_limit + value[mask_limit:]
+
+
 def model_instance_diff(old, new):
     """
     Calculates the differences between two model instances. One of the instances may be ``None`` (i.e., a newly
@@ -139,7 +159,13 @@ def model_instance_diff(old, new):
         new_value = get_field_value(new, field)
 
         if old_value != new_value:
-            diff[field.name] = (smart_str(old_value), smart_str(new_value))
+            if model_fields and field.name in model_fields["mask_fields"]:
+                diff[field.name] = (
+                    mask_str(smart_str(old_value)),
+                    mask_str(smart_str(new_value)),
+                )
+            else:
+                diff[field.name] = (smart_str(old_value), smart_str(new_value))
 
     if len(diff) == 0:
         diff = None
