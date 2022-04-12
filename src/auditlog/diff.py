@@ -3,6 +3,9 @@ from __future__ import unicode_literals
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Model, NOT_PROVIDED
 from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 
 def track_field(field):
@@ -46,6 +49,25 @@ def get_fields_in_model(instance):
     if use_api:
         return [f for f in instance._meta.get_fields() if track_field(f)]
     return instance._meta.fields
+
+
+def mask_str(value: str) -> str:
+    """
+    Masks the first half of the input string to remove sensitive data.
+    :param value: The value to mask.
+    :type value: str
+    :return: The masked version of the string.
+    :rtype: str
+    """
+    try:
+        validate_email(value)
+        at = value.find("@")
+        dot = value[at:].find(".")
+        obfuscated_email = value[0] + "*" * (at - 2) + value[at - 1 : at + 2] + "*" * (dot - 3) + value[at + dot - 1 :]
+        return obfuscated_email
+    except ValidationError as e:
+        mask_limit = int(len(value) / 2)
+        return "*" * mask_limit + value[mask_limit:]
 
 
 def model_instance_diff(old, new):
@@ -108,7 +130,13 @@ def model_instance_diff(old, new):
             new_value = None
 
         if old_value != new_value:
-            diff[field.name] = (smart_text(old_value), smart_text(new_value))
+            if model_fields and field.name in model_fields["mask_fields"]:
+                diff[field.name] = (
+                    mask_str(smart_str(old_value)),
+                    mask_str(smart_str(new_value)),
+                )
+            else:
+                diff[field.name] = (smart_str(old_value), smart_str(new_value))
 
     if len(diff) == 0:
         diff = None
