@@ -2,6 +2,7 @@ import json
 import logging
 
 from auditlog.diff import model_instance_diff
+from auditlog.models import LogEntry
 from auditlog.middleware import get_current_user
 
 
@@ -19,6 +20,12 @@ def log_create(sender, instance, created, **kwargs):
             actor = None
 
         changes = model_instance_diff(None, instance)
+
+        log_entry = LogEntry.objects.log_create(
+            instance,
+            action=LogEntry.Action.CREATE,
+            changes=json.dumps(changes),
+        )
 
         logging.info({ "LogType": "AuditLog", "Class": str(instance.__class__.__name__),
                        "InstanceID": int(instance.id), "Action": "Create", "Actor": actor,
@@ -49,6 +56,11 @@ def log_update(sender, instance, **kwargs):
 
             # Log an entry only if there are changes
             if changes:
+                log_entry = LogEntry.objects.log_create(
+                    instance,
+                    action=LogEntry.Action.UPDATE,
+                    changes=json.dumps(changes),
+                )
                 logging.info({ 'LogType': 'AuditLog', 'Class': str(instance.__class__.__name__),
                                'InstanceID': int(instance.id), 'Action': 'Update', "Actor": actor,
                                'Changes':json.dumps(changes)}
@@ -64,6 +76,11 @@ def log_delete(sender, instance, **kwargs):
     if instance.pk is not None:
         changes = model_instance_diff(instance, None)
 
+        log_entry = LogEntry.objects.log_create(
+            instance,
+            action=LogEntry.Action.DELETE,
+            changes=json.dumps(changes),
+        )
         try:
             actor = get_current_user().id
         except:
