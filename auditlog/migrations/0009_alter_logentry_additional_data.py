@@ -1,5 +1,5 @@
 from django.db import migrations
-from django_jsonfield_backport.models import JSONField
+from jsonfield import JSONField
 
 
 class Migration(migrations.Migration):
