@@ -117,7 +117,7 @@ class AuditlogModelRegistry(object):
             "include_fields": list(self._registry[model]["include_fields"]),
             "exclude_fields": list(self._registry[model]["exclude_fields"]),
             "mapping_fields": dict(self._registry[model]["mapping_fields"]),
-            "mask_fields": list(self._registry[model]["mask_fields"]),
+            "mask_fields": list(self._registry[model].get("mask_fields", [])),
         }
 
     def _connect_signals(self, model):
