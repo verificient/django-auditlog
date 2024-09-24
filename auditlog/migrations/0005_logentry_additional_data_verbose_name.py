@@ -1,4 +1,3 @@
-import jsonfield.fields
 from django.db import migrations, models
 
 
@@ -12,7 +11,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="logentry",
             name="additional_data",
-            field=jsonfield.fields.JSONField(
+            field=models.JSONField(
                 null=True, verbose_name="additional data", blank=True
             ),
         ),
