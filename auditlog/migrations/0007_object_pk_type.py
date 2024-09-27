@@ -15,4 +15,16 @@ class Migration(migrations.Migration):
                 verbose_name="object pk", max_length=255
             ),
         ),
+        migrations.AddField(
+            model_name="logentry",
+            name="remote_addr",
+            field=models.GenericIPAddressField(
+                null=True, verbose_name="remote address", blank=True
+            ),
+        ),
+       migrations.AddField(
+            model_name="logentry",
+            name="additional_data",
+            field=models.JSONField(null=True, blank=True),
+        ),
     ]
