@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db.models import NOT_PROVIDED, DateTimeField, Model
 from django.utils import timezone
-from django.utils.encoding import smart_str, smart_text
+from django.utils.encoding import smart_str
 from django.core.validators import validate_email
 
 
