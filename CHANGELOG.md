@@ -1,10 +1,85 @@
 # Changes
 
+## Next Release
+
+## 2.3.0 (2023-05-26)
+
 #### Improvements
+
+- Django: Confirm Django 4.2 support ([#530](https://github.com/jazzband/django-auditlog/pull/530))
+
+#### Fixes
+fix: Fix a bug in audit log admin page when `USE_TZ=False`. ([#511](https://github.com/jazzband/django-auditlog/pull/511))
+
+## 2.2.2 (2023-01-16)
+
+#### Fixes
+
+- fix: revert [#449](https://github.com/jazzband/django-auditlog/pull/449) "Make log entries read-only in the admin" as it breaks deletion of any auditlogged model through the admin when `AuditlogHistoryField` is used. ([#496](https://github.com/jazzband/django-auditlog/pull/496))
+
+## 2.2.1 (2022-11-28)
+
+#### Fixes
+
+- fix: Make log entries read-only in the admin. ([#449](https://github.com/jazzband/django-auditlog/pull/449))
+- fix: Handle IPv6 addresses in `X-Forwarded-For`. ([#457](https://github.com/jazzband/django-auditlog/pull/457))
+
+## 2.2.0 (2022-10-07)
+
+#### Improvements
+- feat: Add `ACCESS` action to `LogEntry` model and allow object access to be logged. ([#436](https://github.com/jazzband/django-auditlog/pull/436))
+- feat: Add `serialized_data` field on `LogEntry` model. ([#412](https://github.com/jazzband/django-auditlog/pull/412))
+- feat: Display the field name as it would be displayed in Django Admin or use `mapping_field` if available [#428](https://github.com/jazzband/django-auditlog/pull/428)
+- feat: New context manager `disable_auditlog` to turn off logging and a new setting `AUDITLOG_DISABLE_ON_RAW_SAVE`
+  to disable it during raw-save operations like loaddata. [#446](https://github.com/jazzband/django-auditlog/pull/446)
+- Python: Confirm Python 3.11 support ([#447](https://github.com/jazzband/django-auditlog/pull/447))
+- feat: Replace the `django.utils.timezone.utc` by `datetime.timezone.utc`. [#448](https://github.com/jazzband/django-auditlog/pull/448)
+
+#### Fixes
+
+- fix: Display `created` timestamp in server timezone ([#404](https://github.com/jazzband/django-auditlog/pull/404))
+- fix: Handle port in `remote_addr` ([#417](https://github.com/jazzband/django-auditlog/pull/417))
+- fix: Handle the error with AttributeError: 'OneToOneRel' error occur during a `PolymorphicModel` has relation with other models  ([#429](https://github.com/jazzband/django-auditlog/pull/429))
+- fix: Support search by custom USERNAME_FIELD ([#432](https://github.com/jazzband/django-auditlog/pull/432))
+
+## 2.1.1 (2022-07-27)
+
+#### Improvements
+
+- feat: Display the diff for deleted objects in the admin ([#396](https://github.com/jazzband/django-auditlog/pull/396))
+- Django: Confirm Django 4.1 support ([#406](https://github.com/jazzband/django-auditlog/pull/406))
+
+#### Fixes
+
+- fix: Pin `python-dateutil` to 2.7.0 or higher for compatibility with Python 3.10 ([#401](https://github.com/jazzband/django-auditlog/pull/401))
+
+## 2.1.0 (2022-06-27)
+
+#### Improvements
+
+- feat: Add `--before-date` option to `auditlogflush` to support retention windows ([#365](https://github.com/jazzband/django-auditlog/pull/365))
+- feat: Add db_index to the `LogEntry.timestamp` column ([#364](https://github.com/jazzband/django-auditlog/pull/364))
+- feat: Add register model from settings ([#368](https://github.com/jazzband/django-auditlog/pull/368))
+- Context manager set_actor() for use in Celery tasks ([#262](https://github.com/jazzband/django-auditlog/pull/262))
+- Tracking of changes in many-to-many fields ([#309](https://github.com/jazzband/django-auditlog/pull/309))
+
+#### Fixes
+
+- Fix inconsistent changes with JSONField ([#355](https://github.com/jazzband/django-auditlog/pull/355))
+- Disable `add` button in admin ui ([#378](https://github.com/jazzband/django-auditlog/pull/378))
+- Fix n+1 query problem([#381](https://github.com/jazzband/django-auditlog/pull/381))
+
+## 2.0.0 (2022-05-09)
+
+#### Improvements
+
 - feat: enable use of replica database (delegating the choice to `DATABASES_ROUTER`) ([#359](https://github.com/jazzband/django-auditlog/pull/359))
-- Add `mask_fields` argument in `register` to mask sensitive information when logging ([#3710](https://github.com/jazzband/django-auditlog/pull/310))
+- Add `mask_fields` argument in `register` to mask sensitive information when logging ([#310](https://github.com/jazzband/django-auditlog/pull/310))
+- Django: Drop 2.2 support. `django_jsonfield_backport` is not required anymore ([#370](https://github.com/jazzband/django-auditlog/pull/370))
+- Remove `default_app_config` configuration ([#372](https://github.com/jazzband/django-auditlog/pull/372))
 
 #### Important notes
+
 - LogEntry no longer save to same database instance is using
 
 ## 1.0.0 (2022-01-24)
@@ -38,7 +113,6 @@
 - Support Django's save method `update_fields` kwarg ([#336](https://github.com/jazzband/django-auditlog/pull/336))
 - Fix invalid escape sequence on Python 3.7
 
-
 ### Alpha 1 (1.0a1, 2020-09-07)
 
 #### Improvements
@@ -53,13 +127,11 @@
 - Fix field choices diff
 - Allow higher versions of python-dateutil than 2.6.0
 
-
 ## 0.4.8 (2019-11-12)
 
 ### Improvements
 
 - Add support for PostgreSQL 10
-
 
 ## 0.4.7 (2019-12-19)
 
@@ -68,7 +140,6 @@
 - Improve support multiple database (PostgreSQL, MySQL)
 - Django: add 2.1 and 2.2 support, drop < 1.11 versions
 - Python: add 3.7 support
-
 
 ## 0.4.6 (2018-09-18)
 
@@ -86,13 +157,11 @@
 - Fix the rendering of the `msg` field with Django 2.0 ([#166](https://github.com/jazzband/django-auditlog/pull/166))
 - Mark `LogEntryAdminMixin` methods output as safe where required ([#167](https://github.com/jazzband/django-auditlog/pull/167))
 
-
 ## 0.4.5 (2018-01-12)
 
 ### Improvements
 
 Added support for Django 2.0, along with a number of bug fixes.
-
 
 ## 0.4.4 (2017-11-17)
 
@@ -110,13 +179,11 @@ Added support for Django 2.0, along with a number of bug fixes.
 - Add management commands package to setup.py ([#130](https://github.com/jazzband/django-auditlog/pull/130))
 - Add `changes_display_dict` property to `LogEntry` model to display diff in a more human readable format ([#94](https://github.com/jazzband/django-auditlog/pull/94))
 
-
 ## 0.4.3 (2017-02-16)
 
 ### Fixes
 
 - Fixes cricital bug in admin mixin making the library only usable on Django 1.11
-
 
 ## 0.4.2 (2017-02-16)
 
@@ -131,7 +198,6 @@ _As it turns out, haste is never good. Due to the focus on quickly releasing thi
 - A lot, yes, [_really_ a lot](https://github.com/jjkester/django-auditlog/milestone/8?closed=1), of fixes for the admin integration
 - Flush command fixed for Django 1.10
 
-
 ## 0.4.1 (2016-12-27)
 
 ### Improvements
@@ -141,7 +207,6 @@ _As it turns out, haste is never good. Due to the focus on quickly releasing thi
 ### Fixes
 
 - Fixed multithreading issue where the wrong user was written to the log
-
 
 ## 0.4.0 (2016-08-17)
 
@@ -163,7 +228,6 @@ _As it turns out, haste is never good. Due to the focus on quickly releasing thi
 
 - Solved migration error for MySQL users
 
-
 ## 0.3.3 (2016-01-23)
 
 ### Fixes
@@ -176,7 +240,6 @@ _As it turns out, haste is never good. Due to the focus on quickly releasing thi
 
 - The `object_pk` field is now limited to 255 chars
 
-
 ## 0.3.2 (2015-10-19)
 
 ### New functionality
@@ -187,13 +250,11 @@ _As it turns out, haste is never good. Due to the focus on quickly releasing thi
 
 - Enhanced performance for non-integer primary key lookups
 
-
 ## 0.3.1 (2015-07-29)
 
 ### Fixes
 
 - Auditlog data is now correctly stored in the thread.
-
 
 ## 0.3.0 (2015-07-22)
 
@@ -215,13 +276,11 @@ _As it turns out, haste is never good. Due to the focus on quickly releasing thi
 - Better documentation
 - Compatibility with [django-polymorphic](https://pypi.org/project/django-polymorphic/)
 
-
 ## 0.2.1 (2014-07-08)
 
 ### New functionality
 
 - South compatibility for `AuditlogHistoryField`
-
 
 ## 0.2.0 (2014-03-08)
 
@@ -233,7 +292,6 @@ Although this release contains mostly bugfixes, the improvements were significan
 - Model diffs use unicode strings instead of regular strings
 - Tests on middleware
 
-
 ## 0.1.1 (2013-12-12)
 
 ### New functionality
@@ -244,7 +302,6 @@ Although this release contains mostly bugfixes, the improvements were significan
 
 - Only save a new log entry if there are actual changes
 - Better way of loading the user model in the middleware
-
 
 ## 0.1.0 (2013-10-21)
 

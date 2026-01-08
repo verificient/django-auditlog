@@ -9,7 +9,8 @@
 import os
 import sys
 from datetime import date
-from importlib.metadata import version
+
+from auditlog import __version__
 
 # -- Path setup --------------------------------------------------------------
 
@@ -22,7 +23,7 @@ sys.path.insert(0, os.path.abspath("../../"))
 
 # Setup Django for autodoc
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "auditlog_tests.test_settings")
-import django
+import django  # noqa: E402
 
 django.setup()
 
@@ -32,7 +33,7 @@ project = "django-auditlog"
 author = "Jan-Jelle Kester and contributors"
 copyright = f"2013-{date.today().year}, {author}"
 
-release = version("django-auditlog")
+release = __version__
 # for example take major/minor
 version = ".".join(release.split(".")[:2])
 

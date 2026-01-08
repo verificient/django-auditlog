@@ -1,8 +1,10 @@
+from datetime import timezone
+
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import validate_email
-from django.db.models import NOT_PROVIDED, DateTimeField, Model
-from django.utils import timezone
+from django.db.models import NOT_PROVIDED, DateTimeField, JSONField, Model
+from django.utils import timezone as django_timezone
 from django.utils.encoding import smart_str
 
 
@@ -35,8 +37,8 @@ def track_field(field):
 
 def get_fields_in_model(instance):
     """
-    Returns the list of fields in the given model instance. Checks whether to use the official _meta API or use the raw
-    data. This method excludes many to many fields.
+    Returns the list of fields in the given model instance. Checks whether to use the official
+    _meta API or use the raw data. This method excludes many to many fields.
 
     :param instance: The model instance to get the fields for
     :type instance: Model
@@ -59,20 +61,27 @@ def get_field_value(obj, field):
     :return: The value of the field as a string.
     :rtype: str
     """
-    if isinstance(field, DateTimeField):
-        # DateTimeFields are timezone-aware, so we need to convert the field
-        # to its naive form before we can accurately compare them for changes.
-        try:
+    try:
+        if isinstance(field, DateTimeField):
+            # DateTimeFields are timezone-aware, so we need to convert the field
+            # to its naive form before we can accurately compare them for changes.
             value = field.to_python(getattr(obj, field.name, None))
-            if value is not None and settings.USE_TZ and not timezone.is_naive(value):
-                value = timezone.make_naive(value, timezone=timezone.utc)
-        except ObjectDoesNotExist:
-            value = field.default if field.default is not NOT_PROVIDED else None
-    else:
-        try:
+            if (
+                value is not None
+                and settings.USE_TZ
+                and not django_timezone.is_naive(value)
+            ):
+                value = django_timezone.make_naive(value, timezone=timezone.utc)
+        elif isinstance(field, JSONField):
+            value = field.to_python(getattr(obj, field.name, None))
+        else:
             value = smart_str(getattr(obj, field.name, None))
-        except ObjectDoesNotExist:
-            value = field.default if field.default is not NOT_PROVIDED else None
+    except ObjectDoesNotExist:
+        value = (
+            field.default
+            if getattr(field, "default", NOT_PROVIDED) is not NOT_PROVIDED
+            else None
+        )
 
     return value
 
@@ -99,8 +108,9 @@ def mask_str(value: str) -> str:
 
 def model_instance_diff(old, new, fields_to_check=None):
     """
-    Calculates the differences between two model instances. One of the instances may be ``None`` (i.e., a newly
-    created model or deleted model). This will cause all fields with a value to have changed (from ``None``).
+    Calculates the differences between two model instances. One of the instances may be ``None``
+    (i.e., a newly created model or deleted model). This will cause all fields with a value to have
+    changed (from ``None``).
 
     :param old: The old state of the model instance.
     :type old: Model
@@ -109,8 +119,8 @@ def model_instance_diff(old, new, fields_to_check=None):
     :param fields_to_check: An iterable of the field names to restrict the diff to, while ignoring the rest of
         the model's fields. This is used to pass the `update_fields` kwarg from the model's `save` method.
     :type fields_to_check: Iterable
-    :return: A dictionary with the names of the changed fields as keys and a two tuple of the old and new field values
-             as value.
+    :return: A dictionary with the names of the changed fields as keys and a two tuple of the old and new
+            field values as value.
     :rtype: dict
     """
     from auditlog.registry import auditlog
