@@ -49,12 +49,6 @@ def log_create(sender, instance, created, **kwargs):
                        "Changes": json.dumps(changes)}
                      )
 
-        # Also log to database
-        LogEntry.objects.log_create(
-            instance,
-            action=LogEntry.Action.CREATE,
-            changes=json.dumps(changes),
-        )
 
 
 @check_disable
@@ -87,12 +81,6 @@ def log_update(sender, instance, **kwargs):
                                'Changes':json.dumps(changes)}
                              )
 
-                # Also log to database
-                LogEntry.objects.log_create(
-                    instance,
-                    action=LogEntry.Action.UPDATE,
-                    changes=json.dumps(changes),
-                )
 
 
 @check_disable
@@ -116,12 +104,6 @@ def log_delete(sender, instance, **kwargs):
                        'Changes': changes}
                      )
 
-        # Also log to database
-        LogEntry.objects.log_create(
-            instance,
-            action=LogEntry.Action.DELETE,
-            changes=json.dumps(changes),
-        )
 
 
 def log_access(sender, instance, **kwargs):
