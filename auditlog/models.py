@@ -11,6 +11,7 @@ from django.db import DEFAULT_DB_ALIAS, models
 from django.db.models import Field, Q, QuerySet
 from django.utils import formats, timezone
 from django.utils.encoding import smart_str
+from datetime import timezone as dt_timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -345,7 +346,7 @@ class LogEntry(models.Model):
                             elif field_type == "TimeField":
                                 value = value.time()
                             elif field_type == "DateTimeField":
-                                value = value.replace(tzinfo=timezone.utc)
+                                value = value.replace(tzinfo=dt_timezone.utc)
                                 value = value.astimezone(gettz(settings.TIME_ZONE))
                             value = formats.localize(value)
                         except ValueError:
@@ -417,3 +418,4 @@ try:
     )
 except ImportError:
     pass
+

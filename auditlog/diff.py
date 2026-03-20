@@ -3,6 +3,8 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import validate_email
 from django.db.models import NOT_PROVIDED, DateTimeField, Model
 from django.utils import timezone
+from datetime import timezone as dt_timezone
+
 from django.utils.encoding import smart_str
 
 
@@ -65,7 +67,7 @@ def get_field_value(obj, field):
         try:
             value = field.to_python(getattr(obj, field.name, None))
             if value is not None and settings.USE_TZ and not timezone.is_naive(value):
-                value = timezone.make_naive(value, timezone=timezone.utc)
+                value = timezone.make_naive(value, timezone=dt_timezone.utc)
         except ObjectDoesNotExist:
             value = field.default if field.default is not NOT_PROVIDED else None
     else:
@@ -178,3 +180,4 @@ def model_instance_diff(old, new, fields_to_check=None):
         diff = None
 
     return diff
+
