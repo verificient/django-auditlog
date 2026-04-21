@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db.models import NOT_PROVIDED, DateTimeField, Model
@@ -65,7 +67,7 @@ def get_field_value(obj, field):
         try:
             value = field.to_python(getattr(obj, field.name, None))
             if value is not None and settings.USE_TZ and not timezone.is_naive(value):
-                value = timezone.make_naive(value, timezone=timezone.utc)
+                value = timezone.make_naive(value, timezone=datetime.timezone.utc)
         except ObjectDoesNotExist:
             value = field.default if field.default is not NOT_PROVIDED else None
     else:

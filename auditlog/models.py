@@ -1,4 +1,5 @@
 import ast
+import datetime
 import json
 
 from dateutil import parser
@@ -351,7 +352,7 @@ class LogEntry(models.Model):
                             elif field_type == "TimeField":
                                 value = value.time()
                             elif field_type == "DateTimeField":
-                                value = value.replace(tzinfo=timezone.utc)
+                                value = value.replace(tzinfo=datetime.timezone.utc)
                                 value = value.astimezone(gettz(settings.TIME_ZONE))
                             value = formats.localize(value)
                         except ValueError:

@@ -354,7 +354,7 @@ class DateTimeFieldModelTest(TestCase):
     now = timezone.now()
 
     def test_model_with_same_time(self):
-        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -368,7 +368,7 @@ class DateTimeFieldModelTest(TestCase):
         self.assertTrue(dtm.history.count() == 1, msg="There is one log entry")
 
         # Change timestamp to same datetime and timezone
-        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=datetime.timezone.utc)
         dtm.timestamp = timestamp
         dtm.date = datetime.date(2017, 1, 10)
         dtm.time = datetime.time(12, 0)
@@ -378,7 +378,7 @@ class DateTimeFieldModelTest(TestCase):
         self.assertTrue(dtm.history.count() == 1, msg="There is one log entry")
 
     def test_model_with_different_timezone(self):
-        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -400,7 +400,7 @@ class DateTimeFieldModelTest(TestCase):
         self.assertTrue(dtm.history.count() == 1, msg="There is one log entry")
 
     def test_model_with_different_datetime(self):
-        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -414,7 +414,7 @@ class DateTimeFieldModelTest(TestCase):
         self.assertTrue(dtm.history.count() == 1, msg="There is one log entry")
 
         # Change timestamp to another datetime in the same timezone
-        timestamp = datetime.datetime(2017, 1, 10, 13, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 13, 0, tzinfo=datetime.timezone.utc)
         dtm.timestamp = timestamp
         dtm.save()
 
@@ -422,7 +422,7 @@ class DateTimeFieldModelTest(TestCase):
         self.assertTrue(dtm.history.count() == 2, msg="There are two log entries")
 
     def test_model_with_different_date(self):
-        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -444,7 +444,7 @@ class DateTimeFieldModelTest(TestCase):
         self.assertTrue(dtm.history.count() == 2, msg="There are two log entries")
 
     def test_model_with_different_time(self):
-        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -466,7 +466,7 @@ class DateTimeFieldModelTest(TestCase):
         self.assertTrue(dtm.history.count() == 2, msg="There are two log entries")
 
     def test_model_with_different_time_and_timezone(self):
-        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 12, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -488,7 +488,7 @@ class DateTimeFieldModelTest(TestCase):
         self.assertTrue(dtm.history.count() == 2, msg="There are two log entries")
 
     def test_changes_display_dict_datetime(self):
-        timestamp = datetime.datetime(2017, 1, 10, 15, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 15, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -533,7 +533,7 @@ class DateTimeFieldModelTest(TestCase):
             )
 
     def test_changes_display_dict_date(self):
-        timestamp = datetime.datetime(2017, 1, 10, 15, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 15, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -576,7 +576,7 @@ class DateTimeFieldModelTest(TestCase):
             )
 
     def test_changes_display_dict_time(self):
-        timestamp = datetime.datetime(2017, 1, 10, 15, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 15, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -619,7 +619,7 @@ class DateTimeFieldModelTest(TestCase):
             )
 
     def test_update_naive_dt(self):
-        timestamp = datetime.datetime(2017, 1, 10, 15, 0, tzinfo=timezone.utc)
+        timestamp = datetime.datetime(2017, 1, 10, 15, 0, tzinfo=datetime.timezone.utc)
         date = datetime.date(2017, 1, 10)
         time = datetime.time(12, 0)
         dtm = DateTimeFieldModel(
@@ -632,7 +632,7 @@ class DateTimeFieldModelTest(TestCase):
         dtm.save()
 
         # Change with naive field doesnt raise error
-        dtm.naive_dt = timezone.make_naive(timezone.now(), timezone=timezone.utc)
+        dtm.naive_dt = timezone.make_naive(timezone.now(), timezone=datetime.timezone.utc)
         dtm.save()
 
 
